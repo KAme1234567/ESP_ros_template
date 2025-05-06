@@ -25,5 +25,5 @@
 #define AGENT_PORT 8888
 
 // topic 名稱
-#define PUB_TOPIC "button_state"
+#define PUB_TOPIC "/sensor_data_raw"
 #define SUB_TOPIC "button_state"

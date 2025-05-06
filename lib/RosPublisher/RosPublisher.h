@@ -1,11 +1,10 @@
-// RosPublisher.h
 #pragma once
 
 #include <rcl/rcl.h>
 #include <rclc/rclc.h>
-#include <std_msgs/msg/int32.h>
 #include <rclc/executor.h>
 
+template<typename MsgType>
 class RosPublisher {
 public:
   rcl_node_t node;
@@ -14,8 +13,8 @@ public:
   rclc_executor_t executor;
   rcl_publisher_t publisher;
   rcl_timer_t timer;
-  std_msgs__msg__Int32 msg;
+  MsgType msg;
 
-  bool init(const char* node_name, const char* topic_name, rcl_timer_callback_t cb, int interval_ms);
+  bool init(const char* node_name, const rosidl_message_type_support_t* ts, const char* topic_name, rcl_timer_callback_t cb, int interval_ms);
   void spin();
 };
