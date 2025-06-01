@@ -1,53 +1,43 @@
 #include "config.h"
 #include "RosWiFiHelper.h"
 #include "RosPublisher.h"
-#include "rosidl_runtime_c/string_functions.h"
 #include "std_msgs/msg/string.h"
 
 RosPublisher<std_msgs__msg__String> publisher;
 
-const int buttonPin1 = 2;
-const int buttonPin2 = 4;
-int last_state = -1;
-
-char json_buffer[64];
+const int potPin = 34;
+float last_pot_value = -1.0;
 
 void timer_callback(rcl_timer_t*, int64_t) {
-  int b1 = digitalRead(buttonPin1);
-  int b2 = digitalRead(buttonPin2);
-  int state = (!b1 << 1) | (!b2);
+  const int raw_adc = analogRead(potPin);
+  const float pot_value = raw_adc / 4095.0f;
+  const float delta = fabs(pot_value - last_pot_value);
 
-  if (state != last_state) {
-    snprintf(json_buffer, sizeof(json_buffer),
-             "{\"type\": \"button\", \"value\": \"%d\"}", state);
-    Serial.print("[DEBUG] 發送 JSON：");
-    Serial.println(json_buffer);
+  // 變化超過 2% 才發送
+  if (delta > 0.02f) {
+    last_pot_value = pot_value;
 
-    if (rosidl_runtime_c__String__assign(&publisher.msg.data, json_buffer)) {
-      if (rcl_publish(&publisher.publisher, &publisher.msg, NULL) == RCL_RET_OK) {
-        Serial.println("[SEND OK]");
-      } else {
-        Serial.println("[SEND FAIL ❌] rcl_publish failed");
-      }
-    } else {
-      Serial.println("[SEND FAIL ❌] assign failed");
-    }
+    // 轉成 JSON 發送
+   0
 
-    last_state = state;
+
+
+    Serial.printf("🔄 發送: pot_value = %.2f\n", pot_value);
+  } else {
+    Serial.println("🔕 無變化，未發送");
   }
 }
+
 
 void setup() {
   Serial.begin(115200);
   delay(2000);
 
-  pinMode(buttonPin1, INPUT_PULLUP);
-  pinMode(buttonPin2, INPUT_PULLUP);
-
+  pinMode(potPin, INPUT);
   setup_wifi_fallback();
 
   bool ok = publisher.init(
-    "button_pub_node",
+    "sensor_pub_node",
     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, String),
     PUB_TOPIC,
     timer_callback,
@@ -57,7 +47,7 @@ void setup() {
   if (ok) {
     Serial.println("✅ ROS Publisher 初始化成功，開始發送...");
   } else {
-    Serial.println("❌ ROS Publisher 初始化失敗，請檢查連線與 topic 設定");
+    Serial.println("❌ ROS Publisher 初始化失敗");
   }
 }
 
