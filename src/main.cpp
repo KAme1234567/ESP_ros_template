@@ -18,10 +18,10 @@ void timer_callback(rcl_timer_t*, int64_t) {
     last_pot_value = pot_value;
 
     // 轉成 JSON 發送
-   0
+    publisher.send("pot_value", pot_value);
 
 
-
+    
     Serial.printf("🔄 發送: pot_value = %.2f\n", pot_value);
   } else {
     Serial.println("🔕 無變化，未發送");
