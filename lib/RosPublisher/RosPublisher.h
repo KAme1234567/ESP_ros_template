@@ -3,6 +3,8 @@
 #include <rcl/rcl.h>
 #include <rclc/rclc.h>
 #include <rclc/executor.h>
+#include <rosidl_runtime_c/string_functions.h>
+#include <Arduino.h>  // for snprintf, Serial, etc.
 
 // ===== msg types =====
 #include <std_msgs/msg/int32.h>
@@ -12,6 +14,7 @@
 // string helpers
 #include <rosidl_runtime_c/string_functions.h>
 
+<<<<<<< HEAD
 // ===== per-type max counts (可依需求調整) =====
 #ifndef ROSP_MAX_INT32
 #define ROSP_MAX_INT32 8
@@ -114,4 +117,16 @@ private:
   int find_free_float32();
   int find_free_bool  ();
   int find_free_string();
+=======
+  bool init(const char* node_name, const rosidl_message_type_support_t* ts, const char* topic_name, rcl_timer_callback_t cb, int interval_ms);
+  void spin();
+
+  // 簡化發送 API（字串、int、float）
+  void send(const char* key, const char* value);
+  void send(const char* key, int value);
+  void send(const char* key, float value);
+
+private:
+  char json_buffer[64];  // 避免超過 FastCDR 限制
+>>>>>>> 30acb290d12f5dac78a29d347b8c70b6f273b1af
 };

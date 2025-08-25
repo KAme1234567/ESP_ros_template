@@ -1,7 +1,14 @@
 #include "RosPublisher.h"
 #include <string.h>
 
+<<<<<<< HEAD
 RosPublisherManager* RosPublisherManager::s_instance = nullptr;
+=======
+template<typename MsgType>
+
+bool RosPublisher<MsgType>::init(const char* node_name, const rosidl_message_type_support_t* ts, const char* topic_name, rcl_timer_callback_t cb, int interval_ms) {
+  allocator = rcl_get_default_allocator();
+>>>>>>> 30acb290d12f5dac78a29d347b8c70b6f273b1af
 
 RosPublisherManager::RosPublisherManager()
 : allocator_(rcl_get_default_allocator()),
@@ -11,6 +18,7 @@ RosPublisherManager::RosPublisherManager()
   memset(&node_,     0, sizeof(node_));
   memset(&executor_, 0, sizeof(executor_));
 
+<<<<<<< HEAD
   for (int i = 0; i < ROSP_MAX_INT32; ++i) {
     int32_slots_[i].used = false;
     memset(&int32_slots_[i].pub,   0, sizeof(rcl_publisher_t));
@@ -60,6 +68,10 @@ bool RosPublisherManager::init(const char* node_name) {
 
   s_instance = this;
   inited_ = true;
+=======
+  // 初始化 msg.data（針對 String 類型）
+  rosidl_runtime_c__String__init(&msg.data);
+>>>>>>> 30acb290d12f5dac78a29d347b8c70b6f273b1af
   return true;
 }
 
@@ -105,6 +117,7 @@ void RosPublisherManager::fini() {
   s_instance = nullptr;
 }
 
+<<<<<<< HEAD
 int RosPublisherManager::find_free_int32 () { for (int i=0;i<ROSP_MAX_INT32 ;++i) if (!int32_slots_[i].used)  return i; return -1; }
 int RosPublisherManager::find_free_float32() { for (int i=0;i<ROSP_MAX_FLOAT32;++i) if (!float32_slots_[i].used) return i; return -1; }
 int RosPublisherManager::find_free_bool  () { for (int i=0;i<ROSP_MAX_BOOL  ;++i) if (!bool_slots_[i].used)   return i; return -1; }
@@ -246,3 +259,46 @@ void RosPublisherManager::on_timer(rcl_timer_t* timer) {
     }
   }
 }
+=======
+// 傳送 const char*（字串形式）
+template<typename MsgType>
+void RosPublisher<MsgType>::send(const char* key, const char* value) {
+  snprintf(json_buffer, sizeof(json_buffer), "{\"%s\":\"%s\"}", key, value);
+
+  if (strlen(json_buffer) >= sizeof(json_buffer) - 1) {
+    Serial.println("❌ JSON 太長，未送出");
+    return;
+  }
+
+  if (!rosidl_runtime_c__String__assign(&msg.data, json_buffer)) {
+    Serial.println("❌ String assign 失敗");
+    return;
+  }
+
+  rcl_ret_t ret = rcl_publish(&publisher, &msg, NULL);
+  if (ret != RCL_RET_OK) {
+    Serial.print("❌ Publish 失敗: ");
+    Serial.println(rcl_get_error_string().str);
+    rcl_reset_error();
+  } else {
+    Serial.println("[SEND OK]");
+  }
+}
+
+// 傳送 int
+template<typename MsgType>
+void RosPublisher<MsgType>::send(const char* key, int value) {
+  snprintf(json_buffer, sizeof(json_buffer), "{\"%s\":%d}", key, value);
+  send(key, json_buffer);  // 重用字串版
+}
+
+// 傳送 float
+template<typename MsgType>
+void RosPublisher<MsgType>::send(const char* key, float value) {
+  snprintf(json_buffer, sizeof(json_buffer), "{\"%s\":%.2f}", key, value);
+  send(key, json_buffer);  // 重用字串版
+}
+
+// 強制實例化模板
+template class RosPublisher<std_msgs__msg__String>;
+>>>>>>> 30acb290d12f5dac78a29d347b8c70b6f273b1af
