@@ -23,9 +23,6 @@ const int PWM_FREQ_SERVO = 50;
 const int PWM_RES_DC     = 8;
 const int PWM_RES_SERVO  = 16;     // 16-bit (0..65535)
 const int PWM_PERIOD     = 20000;  // us, for 50Hz
-// ---- DC 指令範圍 & 死區設定 ----
-const int DC_DEAD_POS  = 100;    // 正向死區（0~1000），例如 30 ≈ 3%
-const int DC_DEAD_NEG  = 100;    // 反向死區（0~1000）
 
 // ==== 狀態 ====
 static int lastDCDir = 0;   // -1, 0, +1
@@ -71,32 +68,30 @@ void apply_dc_percent(int percent) {
   percent = constrain(percent, -100, 100);
 
   if (percent == 0) {
-	stopMotorSoft();
-	lastDCDir = 0;
-		ledcWrite(MOTOR_CH1, 0);
-	ledcWrite(MOTOR_CH2, 0);
-	return;
+    stopMotorSoft();
+    lastDCDir = 0;
+    return;
   }
 
   if (percent > 0) {
-	if (lastDCDir != 1) {
-	  stopMotorSoft(); // 避免硬反轉
-	  // 不在回呼中 delay，這裡在 loop 裡短暫 delay 可接受
-	  delay(50);
-	}
-	int pwm = map(percent, 0, 100, DC_DEAD_POS, 255);
-	ledcWrite(MOTOR_CH1, pwm);
-	ledcWrite(MOTOR_CH2, 0);
-	lastDCDir = 1;
+    if (lastDCDir != 1) {
+      stopMotorSoft(); // 避免硬反轉
+      // 不在回呼中 delay，這裡在 loop 裡短暫 delay 可接受
+      delay(50);
+    }
+    int pwm = map(percent, 0, 100, 0, 255);
+    ledcWrite(MOTOR_CH1, pwm);
+    ledcWrite(MOTOR_CH2, 0);
+    lastDCDir = 1;
   } else { // percent < 0
-	if (lastDCDir != -1) {
-	  stopMotorSoft();
-	  delay(50);
-	}
-	int pwm = map(-percent, 0, 100, DC_DEAD_NEG, 255);
-	ledcWrite(MOTOR_CH1, 0);
-	ledcWrite(MOTOR_CH2, pwm);
-	lastDCDir = -1;
+    if (lastDCDir != -1) {
+      stopMotorSoft();
+      delay(50);
+    }
+    int pwm = map(-percent, 0, 100, 0, 255);
+    ledcWrite(MOTOR_CH1, 0);
+    ledcWrite(MOTOR_CH2, pwm);
+    lastDCDir = -1;
   }
 }
 

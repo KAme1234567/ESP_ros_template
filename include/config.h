@@ -3,7 +3,7 @@
 
 #include <WiFi.h>
 #include <IPAddress.h>
-
+#define NODE_NAME "esp32_node_allinone"
 // ===== Wi-Fi 設定 =====
 // ⬅️ 原本是 MAIN 的，現在變成 BACKUP
 #define MAIN_SSID "auv-12345678"
@@ -25,5 +25,6 @@
 #define AGENT_PORT 8888
 
 // topic 名稱
-#define PUB_TOPIC "/sensor_data_raw"
-#define SUB_TOPIC "button_state"
+#define PUB_TOPIC "/esp_TEST"
+#define SUB_TOPIC "/motor/speed_percent"
+

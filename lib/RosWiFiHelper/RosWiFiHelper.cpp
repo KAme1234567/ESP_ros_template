@@ -11,13 +11,13 @@ bool connectToWiFi(const char* ssid, const char* password, IPAddress local_ip, I
 
   for (int i = 0; i < max_attempts; i++) {
     if (WiFi.status() == WL_CONNECTED) {
-      Serial.print("✅ Connected: ");
+      Serial.print("✅ 连接的: ");
       Serial.println(WiFi.localIP());
       return true;
     }
     delay(1000);
   }
-  Serial.println("❌ Wi-Fi Failed");
+  Serial.println("❌ Wi-Fi 失败");
   return false;
 }
 
