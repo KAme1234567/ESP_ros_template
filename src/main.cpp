@@ -143,6 +143,7 @@ void cb_stop(const std_msgs__msg__Bool* m, void*) {
 static RosNodeManager* g_node = nullptr;
 
 void setup() {
+	delay(10000);
   Serial.begin(115200);
   delay(200);
 
@@ -178,10 +179,10 @@ void setup() {
   }
 
   // === 訂閱：用 ROS 直接控制 ===
-  g_node->add_int32_subscription ("/ctrl/dc_percent",   &cb_dc_percent);
-  g_node->add_int32_subscription ("/ctrl/servo_deg",    &cb_servo_deg);
-  g_node->add_int32_subscription ("/ctrl/esc_percent",  &cb_esc_percent);
-  g_node->add_bool_subscription   ("/ctrl/stop",        &cb_stop);
+  g_node->add_int32_subscription ("/ctrlA/dc_percent",   &cb_dc_percent);
+  g_node->add_int32_subscription ("/ctrlA/servo_deg",    &cb_servo_deg);
+  g_node->add_int32_subscription ("/ctrlA/esc_percent",  &cb_esc_percent);
+  g_node->add_bool_subscription   ("/ctrlA/stop",        &cb_stop);
 
   Serial.println("ROS control ready.");
 }
