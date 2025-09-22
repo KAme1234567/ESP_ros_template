@@ -36,14 +36,11 @@ void setup() {
     return;
   }
 
-  // Int32
-  pubman.add_int32_publisher("/battery/mv", 1000, &read_battery_mv);
-  // Float32
-  pubman.add_float32_publisher("/depth/m", 200, &read_depth_m);
-  // Bool
-  pubman.add_bool_publisher("/system/autonomous", 1000, &read_is_autonomous);
-  // String
-  pubman.add_string_publisher("/system/status_text", 1000, &read_status_text);
+
+  pubman.add_int32_publisher("/battery/mv", 1000, &read_battery_mv);  // Int32
+  pubman.add_float32_publisher("/depth/m", 200, &read_depth_m);  // Float32
+  pubman.add_bool_publisher("/system/autonomous", 1000, &read_is_autonomous);  // Bool
+  pubman.add_string_publisher("/system/status_text", 1000, &read_status_text);  // String
 
   Serial.println("准备完毕。");
 }

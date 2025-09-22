@@ -31,7 +31,7 @@ void setup(){
   setup_wifi_fallback();
 
   if(!node.init(NODE_NAME)){
-    Serial.println("RosNodeManager init failed!");
+    Serial.println("初始化失败!");
     return;
   }
 
@@ -45,9 +45,9 @@ void setup(){
   node.add_int32_subscription ("/cmd/mode",          &on_mode);
   node.add_float32_subscription("/cmd/target_depth", &on_target_depth);
   node.add_bool_subscription   ("/cmd/armed",        &on_armed);
-  node.add_string_subscription ("/cmd/note",         &on_note); // BestEffort + 預配置
+  node.add_string_subscription ("/cmd/note",         &on_note); 
 
-  Serial.println("RosNodeManager ready.");
+  Serial.println("准备好了.");
 }
 
 void loop(){
