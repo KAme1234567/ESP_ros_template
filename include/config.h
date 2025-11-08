@@ -4,12 +4,12 @@
 #include <WiFi.h>
 #include <IPAddress.h>
 
-#define NODE_NAME "esp32_PCTEST"
+#define NODE_NAME "esp32_power"
 
 // ===== Wi-Fi 設定 =====
 #define MAIN_SSID "auv-12345678"
 #define MAIN_PASS "12345678"
-#define MAIN_IP IPAddress(192, 168, 4, 23)
+#define MAIN_IP IPAddress(192, 168, 4, 26)
 #define MAIN_GATEWAY IPAddress(192, 168, 4, 1)
 
 #define MAIN_SUBNET IPAddress(255, 255, 255, 0)

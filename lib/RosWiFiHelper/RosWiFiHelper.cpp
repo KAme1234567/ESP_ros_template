@@ -28,6 +28,6 @@ void setup_wifi_fallback() {
     set_microros_wifi_transports(BACKUP_SSID, BACKUP_PASS, BACKUP_AGENT, AGENT_PORT);
   } else {
     Serial.println("❌ 無法連接任何 Wi-Fi，停機等待...");
-    while (1) delay(1000);
+    
   }
 }
